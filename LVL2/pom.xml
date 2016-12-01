@@ -5,7 +5,7 @@
     <artifactId>LVL2</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
-    <name>LVL2 - Github</name>
+    <name>LVL2 Spring MVC Webapp</name>
     <url>http://maven.apache.org</url>
   
     <properties>
