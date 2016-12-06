@@ -4,6 +4,8 @@ package com.tsguild.lvl2;
 import com.tsguild.lvl2.dao.BlogPostDao;
 import com.tsguild.lvl2.dao.StaticPageDao;
 import com.tsguild.lvl2.dto.BlogPost;
+import com.tsguild.lvl2.dto.StaticPage;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +44,18 @@ public class AdminController {
         return blogDao.getAllBlogPosts();
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/pages", method = RequestMethod.GET)
+    public List<StaticPage> getAllStaticPages() {
+        return staticDao.getAllStaticPages();
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/post/{postId}", method = RequestMethod.GET)
+    public BlogPost getJsonPost(@PathVariable int postId){
+        return blogDao.getBlogPostById(postId);
+    }
+    
     @ResponseBody
 //    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/blog", method = RequestMethod.POST)
@@ -121,5 +135,30 @@ public class AdminController {
         } else if (request.isUserInRole("ROLE_ADMIN")) {
             blogDao.removeBlogPost(id);
         }
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/staticpage/{id}", method = RequestMethod.DELETE)
+    public void deleteStaticPage(@PathVariable int id, HttpServletRequest request) {
+        StaticPage page = staticDao.getStaticPageById(id);
+        if (request.isUserInRole("ROLE_EMPLOYEE")) {
+            page.setStatus(10);
+            staticDao.updateStaticPage(page);
+        } else if (request.isUserInRole("ROLE_ADMIN")) {
+            staticDao.removeStaticPage(id);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/staticpage", method = RequestMethod.POST)
+    public void createStaticPage(@RequestBody StaticPage page, HttpServletRequest request) {
+        
+        if (request.isUserInRole("ROLE_EMPLOYEE")) {
+            page.setStatus(12);
+        } else if (request.isUserInRole("ROLE_ADMIN")) {
+            page.setStatus(15);
+        }
+        
+        staticDao.addStaticPage(page);
     }
 }
